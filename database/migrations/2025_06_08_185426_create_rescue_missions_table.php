@@ -12,7 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rescue_missions', function (Blueprint $table) {
-            $table->id();
+            //rescue_missions: location_id (FK), leader_email (max 50), report (max 2048), success (boolean)
+            $table->foreignId('location_id')->constrained()->onDelete('cascade');
+            $table->string('leader_email', 50);
+            $table->string('report', 2048);
+            $table->boolean('success')->default(false);
             $table->timestamps();
         });
     }
