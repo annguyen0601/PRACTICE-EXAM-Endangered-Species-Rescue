@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Expert;
 
 class ExpertSeeder extends Seeder
 {
@@ -12,6 +13,8 @@ class ExpertSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        Expert::factory()
+            ->count(30)
+            ->create();
     }
 }
