@@ -41,7 +41,7 @@ class MissionController extends Controller
         $experts = Expert::findMany($request->experts);
 
         $totalSkill = $experts->sum(function ($expert) {
-            return ($expert->experience * 1.5) + $expert->skill;
+            return ($expert->experience * 2) + $expert->knowledge;
         });
 
         $location = Location::find($request->location_id);
