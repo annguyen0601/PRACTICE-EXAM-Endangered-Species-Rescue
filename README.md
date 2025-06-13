@@ -1,61 +1,111 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Endangered Species Rescue Mission
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This project is a Laravel API for managing rescue missions to save endangered species. It lets you select a rescue location, assign wildlife experts, and determine if the mission is successful based on the team's combined effectiveness.
 
-## About Laravel
+## 🚀 Getting Started
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**Backend Setup**
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1. Clone the repo:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```bash
+git clone https://github.com/annguyen0601/endangered-species-rescue-api.git
+cd endangered-species-rescue-api
+```
 
-## Learning Laravel
+2. Install dependencies:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```bash
+composer install
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+3. Set up your environment:
+    - Copy `.env.example` to `.env`
+    - Set up SQLite:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```
+DB_CONNECTION=sqlite
+DB_DATABASE=/absolute/path/to/database.sqlite
+```
 
-## Laravel Sponsors
+    - Generate app key:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+php artisan key:generate
+```
 
-### Premium Partners
+4. Run migrations and seed the database:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+php artisan migrate
+php artisan db:seed
+```
 
-## Contributing
+5. Start the server:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+php artisan serve
+```
 
-## Code of Conduct
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 📝 API Endpoints
 
-## Security Vulnerabilities
+- `GET /api/locations` – List all locations.
+- `GET /api/experts` – List all experts.
+- `POST /api/mission` – Submit a rescue mission (requires token).
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-## License
+## 🔐 Authentication
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+All POST requests to `/api/mission` must include this header:
+
+```
+Authorization: Bearer SAVE-THE-WILD
+```
+
+
+## 📦 Example Request Body
+
+When submitting a rescue mission, send a JSON body like this:
+
+```json
+{
+  "leader_email": "jane.doe@example.com",
+  "location_id": 3,
+  "experts": [4, 7, 12]
+}
+```
+
+- `leader_email`: The team leader’s email (required, must be valid).
+- `location_id`: The ID of the rescue location (required, must exist).
+- `experts`: An array of expert IDs assigned to the mission (required, must exist).
+
+
+## 🔗 How It Works
+
+- Each expert’s effectiveness is calculated as:
+`(experience * 2) + knowledge`
+- The sum of all selected experts’ effectiveness is compared to the location’s threat level.
+- If the team’s total effectiveness meets or exceeds the threat level, the mission is a success!
+- After submission, the leader receives a summary email from `rescue-mission@wildlife.org` ("Rescue Control").
+
+
+## 🧑‍💻 Example Response
+
+On success:
+
+```json
+{
+  "message": "Rescue at Amazon Rainforest was a success thanks to Alice, John.",
+  "success": true
+}
+```
+
+On failure:
+
+```json
+{
+  "message": "Rescue at Arctic Tundra failed due to low effectiveness of Bob, Eve.",
+  "success": false
+}
+```
